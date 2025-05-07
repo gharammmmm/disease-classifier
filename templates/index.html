@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>التشخيص الرقمي </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+
+      /* تصغير الصفحة بنسبة 80% */
+      transform: scale(0.8);
+      transform-origin: top center; /* ضبط نقطة التصغير */
+    }
+    main {
+      width: 100%;
+      max-width: 1200px;
+      padding: 50px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: #00796b;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #e0f2f1, #a5d6a7);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .disease-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 10px;
+      justify-items: center;
+      align-items: center;
+    }
+    .disease-item {
+      background: rgba(255, 255, 255, 0.9);
+      color: #37474f;
+      width: 100%;
+      max-width: 300px;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      border: 1px solid #e0e0e0;
+    }
+    .disease-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    .disease-item i {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    .disease-item h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #00796b;
+      font-weight: 700;
+    }
+    .disease-item p {
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      color: #616161;
+    }
+    .disease-item a {
+      color: #fff;
+      background: linear-gradient(135deg, #4db6ac, #81c784);
+      padding: 8px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+    .disease-item a:hover {
+      background: linear-gradient(135deg, #388e7e, #66bb6a);
+    }
+    .disease-item:nth-child(1) i {
+      color: #d32f2f;
+    }
+    .disease-item:nth-child(2) i {
+      color: #d32f2f;
+    }
+    .disease-item:nth-child(3) i {
+      color: #8e24aa;
+    }
+    .disease-item:nth-child(4) i {
+      color: #f57c00;
+    }
+
+    /* تخصيص أيقونة مرض السكري مع نقطة الدم الصغيرة */
+    .diabetes-icon {
+      position: relative;
+      color: #d32f2f;
+      font-size: 36px;
+    }
+
+    .diabetes-icon::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 4px;
+      height: 5px;
+      background-color: red;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        transform: scale(0.7); /* تصغير أكثر للأجهزة الصغيرة */
+      }
+      h1 {
+        font-size: 28px;
+      }
+      .disease-item {
+        padding: 10px;
+      }
+      .disease-item i {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>التشخيص الرقمي</h1>
+    <div class="disease-grid">
+      <div class="disease-item" onclick="location.href='heart_prediction.html';">
+        <i class="fas fa-heartbeat"></i>
+        <h2>التنبؤ بمرض القلب</h2>
+        <p>تحليل مخاطر الإصابة بأمراض القلب.</p>
+        <a href="{{ url_for('page1') }}">ابدأ الآن</a>
+      </div>
+
+      <div class="disease-item" onclick="location.href='page1.html';">
+        <i class="fas fa-hand-point-up diabetes-icon"></i>
+        <h2>التنبؤ بمرض السكري</h2>
+        <p>توقع احتمالية الإصابة بالسكري.</p>
+        <a href="{{ url_for('page2') }}">ابدأ الآن</a>
+      </div>
+
+      <div class="disease-item" onclick="location.href='breast_cancer_prediction.html';">
+        <i class="fas fa-ribbon"></i>
+        <h2>التنبؤ بسرطان الثدي</h2>
+        <p>قيّم خطر الإصابة بسرطان الثدي.</p>
+        <a href="{{ url_for('page3') }}">ابدأ الآن</a>
+      </div>
+
+      <div class="disease-item" onclick="location.href='lung_cancer_prediction.html';">
+        <i class="fas fa-lungs"></i>
+        <h2>التنبؤ بسرطان الرئة</h2>
+        <p>تحليل احتمالية الإصابة بسرطان الرئة.</p>
+        <a href="{{ url_for('page4') }}">ابدأ الآن</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

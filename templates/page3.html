@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #E3F2FD;
+            margin: 0;
+            padding: 0;
+            transform: scale(0.65);
+            transform-origin: top center;
+        }
+
+        header {
+            background-color: #42A5F5;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .project_name {
+            text-align: center;
+            color: #1E88E5;
+            margin: 15px 0;
+            font-size: 22px;
+        }
+
+        .main-content {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            margin: 15px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        form h1 {
+            text-align: center;
+            color: #42A5F5;
+            font-size: 20px;
+        }
+
+        .form-rowfour {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .form-rowfour div {
+            flex: 1 1 45%;
+            min-width: 150px;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1E88E5;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #90CAF9;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-submit button {
+            background-color: #FF7043;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 20px
+        }
+
+        .form-submit button:hover {
+            background-color: #F4511E;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: center; /* محاذاة في المنتصف */
+            margin: 20px 0;
+         }
+        .result-box {
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .high-risk {
+            background-color: #E53935;
+            color: white;
+        }
+        .low-risk {
+            background-color: #66BB6A;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #7E57C2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>توقع سرطان الثدي</h1>
+    </header>
+
+    <div class="main-content">
+        <form id="knn-form" action="{{ url_for('page3') }}" method="post">
+            <div class="form-rowfour">
+                <div>
+                    <label for="mean_radius">Mean Radius:</label>
+                    <input type="number" id="mean_radius" name="mean_radius" step="0.01" required>
+                </div>
+                <div>
+                    <label for="mean_texture">Mean Texture:</label>
+                    <input type="number" id="mean_texture" name="mean_texture" step="0.01" required>
+                </div>
+                <div>
+                    <label for="mean_perimeter">Mean Perimeter:</label>
+                    <input type="number" id="mean_perimeter" name="mean_perimeter" step="0.01" required>
+                </div>
+                <div>
+                    <label for="mean_area">Mean Area:</label>
+                    <input type="number" id="mean_area" name="mean_area" step="0.01" required>
+                </div>
+                <div>
+                    <label for="mean_smoothness">Mean Smoothness:</label>
+                    <input type="number" id="mean_smoothness" name="mean_smoothness" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="form-submit">
+                <button type="submit">توقع النتيجة</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="result-row">
+        <div id="cancer" class="result-box">نتيجة التشخيص ستظهر هنا</div>
+    </div>
+
+    <footer>
+        <p>تم تطوير هذا النظام بواسطة م.نياظ النجار <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script>
+        document.getElementById('knn-form').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObject = Object.fromEntries(formData.entries());
+
+            const diagnosisBox = document.getElementById('cancer');
+
+            try {
+                const response = await fetch('{{ url_for('page3') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject),
+                });
+
+                const result = await response.json();
+                diagnosisBox.textContent = result.diagnosis;
+
+                if (result.diagnosis.includes('High Risk Detected')) {
+                    diagnosisBox.className = 'result-box high-risk';
+                } else {
+                    diagnosisBox.className = 'result-box low-risk';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                diagnosisBox.textContent = 'حدث خطأ أثناء المعالجة';
+                diagnosisBox.className = 'result-box high-risk';
+            }
+        };
+    </script>
+</body>
+</html>

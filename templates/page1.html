@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <title>توقع أمراض القلب</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #E3F2FD;
+            margin: 0;
+            padding: 0;
+            transform: scale(0.68);
+            transform-origin: top center;
+        }
+        header {
+            background-color: #42A5F5;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+        header img {
+            width: 100%;
+            max-height: 120px;
+            object-fit: cover;
+        }
+        .main-content {
+            margin: 10px;
+            padding: 10px;
+        }
+        form {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .form-row, .form-rowfour {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .form-row div, .form-rowfour div {
+            width: 35%;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1E88E5;
+            font-weight: bold;
+        }
+        input[type="number"], select {
+            width: 90%;
+            padding: 8px;
+            border: 2px solid #90CAF9;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .form-submit button {
+            background-color: #FF7043;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .form-submit button:hover {
+            background-color: #F4511E;
+        }
+        .result-box {
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .high-risk {
+            background-color: #E53935;
+            color: white;
+        }
+        .low-risk {
+            background-color: #66BB6A;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #7E57C2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>توقع أمراض القلب</h1>
+    </header>
+
+    <div class="main-content">
+        <form id="knn-form" action="{{ url_for('page1') }}" method="post">
+            <div class="form-rowfour">
+                <div>
+                    <label for="age">العمر:</label>
+                    <input type="number" id="age" name="Age" required>
+                </div>
+                <div>
+                    <label for="sex">الجنس:</label>
+                    <select id="sex" name="Sex" required>
+                        <option value="1">ذكر</option>
+                        <option value="0">أنثى</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="chestPainType">نوع ألم الصدر:</label>
+                    <select id="chestPainType" name="ChestPainType" required>
+                        <option value="1">ذبحة صدرية نموذجية</option>
+                        <option value="2">ذبحة صدرية غير نموذجية</option>
+                        <option value="3">ألم غير ذبحي</option>
+                        <option value="4">بدون أعراض</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="restingBP">ضغط الدم أثناء الراحة:</label>
+                    <input type="number" id="restingBP" name="RestingBP" required>
+                </div>
+            </div>
+            <div class="form-rowfour">
+                <div>
+                    <label for="cholesterol">الكوليسترول:</label>
+                    <input type="number" id="cholesterol" name="Cholesterol" required>
+                </div>
+                <div>
+                    <label for="fastingBS">سكر الدم الصائم:</label>
+                    <select id="fastingBS" name="FastingBS" required>
+                        <option value="1">نعم</option>
+                        <option value="0">لا</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="restingECG">تخطيط القلب أثناء الراحة:</label>
+                    <select id="restingECG" name="RestingECG" required>
+                        <option value="0">طبيعي</option>
+                        <option value="1">شذوذ موجة ST-T</option>
+                        <option value="2">تضخم البطين الأيسر</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="maxHR">أقصى معدل لضربات القلب:</label>
+                    <input type="number" id="maxHR" name="MaxHR" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label for="exerciseAngina">ذبحة صدرية أثناء التمرين:</label>
+                    <select id="exerciseAngina" name="ExerciseAngina" required>
+                        <option value="1">نعم</option>
+                        <option value="0">لا</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="oldpeak">Oldpeak:</label>
+                    <input type="number" id="oldpeak" name="Oldpeak" step="0.1" required>
+                </div>
+                <div>
+                    <label for="stSlope">الميل ST:</label>
+                    <select id="stSlope" name="ST_Slope" required>
+                        <option value="1">صاعد</option>
+                        <option value="2">مسطح</option>
+                        <option value="3">هابط</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="submit">توقع النتيجة</button>
+            </div>
+        </form>
+
+        <div class="result-box" id="diagnosis">سيتم عرض النتيجة هنا</div>
+    </div>
+
+    <footer>
+        <p>تم تطوير هذا النموذج بواسطة م.نياظ النجار <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script>
+        document.getElementById('knn-form').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObject = Object.fromEntries(formData.entries());
+
+            const diagnosisBox = document.getElementById('diagnosis');
+
+            try {
+                const response = await fetch('{{ url_for('page1') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject),
+                });
+
+                const result = await response.json();
+                diagnosisBox.textContent = result.diagnosis;
+
+                if (result.diagnosis.includes('High Risk Detected')) {
+                    diagnosisBox.className = 'result-box high-risk';
+                } else {
+                    diagnosisBox.className = 'result-box low-risk';
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                diagnosisBox.textContent = 'حدث خطأ أثناء التوقع';
+                diagnosisBox.className = 'result-box high-risk';
+            }
+        };
+    </script>
+</body>
+</html>

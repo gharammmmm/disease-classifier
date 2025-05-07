@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
+  <title>توقع سرطان الرئة</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #E3F2FD;
+      margin: 0;
+      padding: 0;
+      transform: scale(0.68);
+      transform-origin: top center;
+    }
+    header {
+      background-color: #42A5F5;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .main-content {
+      margin: 10px;
+      padding: 10px;
+    }
+    form {
+      background: #FFFFFF;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    /* كل صف باستخدام Flexbox مع محاذاة العناصر لضمان استقامة المستطيلات */
+   .form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; /* يجعل جميع العناصر تمتد لنفس الطول */
+  margin-bottom: 18px;
+}
+
+.form-row div {
+  width: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #1E88E5;
+  font-weight: bold;
+  text-align: center;
+  min-height: 40px; /* لضمان أن جميع العناوين تكون بنفس الطول */
+}
+
+input[type="number"],
+select {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #90CAF9;
+  border-radius: 6px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+    .form-submit {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .form-submit button {
+      background-color: #FF7043;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .form-submit button:hover {
+      background-color: #F4511E;
+    }
+    .result-box {
+      padding: 15px;
+      margin: 20px 0;
+      text-align: center;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .high-risk {
+      background-color: #E53935;
+      color: white;
+    }
+    .low-risk {
+      background-color: #66BB6A;
+      color: white;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      background: #7E57C2;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>توقع سرطان الرئة</h1>
+  </header>
+  <div class="main-content">
+    <form id="knn-form" action="{{ url_for('page4') }}" method="post">
+      <!-- الصف الأول (5 مستطيلات) -->
+      <div class="form-row">
+        <div>
+          <label for="gender">الجنس:</label>
+          <select id="gender" name="GENDER" required>
+            <option value="1">ذكر (1)</option>
+            <option value="0">أنثى (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="age">العمر:</label>
+          <input type="number" id="age" name="AGE" min="0" required>
+        </div>
+        <div>
+          <label for="smoking">هل تدخن؟</label>
+          <select id="smoking" name="SMOKING" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="yellow_fingers">هل أصابعك صفراء؟</label>
+          <select id="yellow_fingers" name="YELLOW_FINGERS" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="anxiety">هل تعاني من القلق؟</label>
+          <select id="anxiety" name="ANXIETY" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+      </div>
+      <!-- الصف الثاني (5 مستطيلات) -->
+      <div class="form-row">
+        <div>
+          <label for="peer_pressure">هل تتعرض لضغط الأقران؟</label>
+          <select id="peer_pressure" name="PEER_PRESSURE" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="chronic_disease">هل تعاني من أمراض مزمنة؟</label>
+          <select id="chronic_disease" name="CHRONIC_DISEASE" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="fatigue">هل تشعر بالتعب؟</label>
+          <select id="fatigue" name="FATIGUE" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="allergy">هل تعاني من الحساسية؟</label>
+          <select id="allergy" name="ALLERGY" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="wheezing">هل تعاني من الصفير؟</label>
+          <select id="wheezing" name="WHEEZING" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+      </div>
+      <!-- الصف الثالث (5 مستطيلات) -->
+      <div class="form-row">
+        <div>
+          <label for="alcohol_consuming">هل تستهلك الكحول؟</label>
+          <select id="alcohol_consuming" name="ALCOHOL_CONSUMING" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="coughing">هل تعاني من السعال؟</label>
+          <select id="coughing" name="COUGHING" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="shortness_of_breath">هل تعاني من ضيق في التنفس؟</label>
+          <select id="shortness_of_breath" name="SHORTNESS_OF_BREATH" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="swallowing_difficulty">هل تعاني من صعوبة في البلع؟</label>
+          <select id="swallowing_difficulty" name="SWALLOWING_DIFFICULTY" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+        <div>
+          <label for="chest_pain">هل تشعر بألم في الصدر؟</label>
+          <select id="chest_pain" name="CHEST_PAIN" required>
+            <option value="1">نعم (1)</option>
+            <option value="0">لا (0)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-submit">
+        <button type="submit">توقع النتيجة</button>
+      </div>
+    </form>
+    <div class="result-box" id="cancer">سيتم عرض النتيجة هنا</div>
+  </div>
+  <footer>
+    <p>تم إنشاء هذا النموذج بواسطة م.غرام العبدالله <i class="fas fa-heart"></i></p>
+  </footer>
+  <script>
+    document.getElementById('knn-form').onsubmit = async function(event) {
+      event.preventDefault();
+      const formData = new FormData(event.target);
+      const formObject = Object.fromEntries(formData.entries());
+      const diagnosisBox = document.getElementById('cancer');
+      try {
+        const response = await fetch('{{ url_for('page4') }}', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formObject)
+        });
+        const result = await response.json();
+        diagnosisBox.textContent = result.lung_cancer_prediction;
+        if(result.lung_cancer_prediction.includes('High Risk Detected')){
+          diagnosisBox.className = 'result-box high-risk';
+        } else if(result.lung_cancer_prediction.includes('Low Risk Detected')){
+          diagnosisBox.className = 'result-box low-risk';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        diagnosisBox.textContent = 'حدث خطأ';
+        diagnosisBox.className = 'result-box high-risk';
+      }
+    };
+  </script>
+</body>
+</html>

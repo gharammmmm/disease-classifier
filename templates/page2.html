@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+    <title>توقع مستوى السكر في الدم</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #E3F2FD;
+            margin: 0;
+            padding: 0;
+            transform: scale(0.68);
+            transform-origin: top center;
+        }
+        header {
+            background-color: #42A5F5;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+        header img {
+            width: 100%;
+            max-height: 120px;
+            object-fit: cover;
+        }
+        .main-content {
+            margin: 10px;
+            padding: 10px;
+        }
+        form {
+            background: #FFFFFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-row div {
+            width: 48%;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #1E88E5;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #90CAF9;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .form-submit button {
+            background-color: #FF7043;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .form-submit button:hover {
+            background-color: #F4511E;
+        }
+        .result-box {
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .high-risk {
+            background-color: #E53935;
+            color: white;
+        }
+        .low-risk {
+            background-color: #66BB6A;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #7E57C2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>توقع مستوى السكر في الدم</h1>
+    </header>
+
+    <div class="main-content">
+        <form id="svm-form" action="{{ url_for('page1') }}" method="post">
+            <div class="form-row">
+                <div><label for="Pregnancies">عدد مرات الحمل:</label><input type="number" id="Pregnancies" name="Pregnancies" required></div>
+                <div><label for="Glucose">مستوى الجلوكوز:</label><input type="number" id="Glucose" name="Glucose" required></div>
+            </div>
+            <div class="form-row">
+                <div><label for="BloodPressure">ضغط الدم:</label><input type="number" id="BloodPressure" name="BloodPressure" required></div>
+                <div><label for="SkinThickness">سماكة الجلد:</label><input type="number" id="SkinThickness" name="SkinThickness" required></div>
+            </div>
+            <div class="form-row">
+                <div><label for="Insulin">مستوى الإنسولين:</label><input type="number" id="Insulin" name="Insulin" required></div>
+                <div><label for="BMI">مؤشر كتلة الجسم (BMI):</label><input type="number" step="0.1" id="BMI" name="BMI" required></div>
+            </div>
+            <div class="form-row">
+                <div><label for="DiabetesPedigreeFunction">عامل الوراثة للسكري:</label><input type="number" step="0.01" id="DiabetesPedigreeFunction" name="DiabetesPedigreeFunction" required></div>
+                <div><label for="Age">العمر:</label><input type="number" id="Age" name="Age" required></div>
+            </div>
+            <div class="form-submit"><button type="submit">توقع النتيجة</button></div>
+        </form>
+
+        <div class="result-box" id="knnResult">سيتم عرض النتيجة هنا</div>
+    </div>
+
+    <footer>
+        <p>تم تطوير هذا النموذج بواسطة م. غرام العبد الله <i class="fas fa-heart"></i></p>
+    </footer>
+
+    <script>
+
+      function openNav() {
+            document.getElementById("mySidebar").classList.add("open");
+            document.querySelector(".openbtn").classList.add("hidden");
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").classList.remove("open");
+            document.querySelector(".openbtn").classList.remove("hidden");
+        }
+
+
+
+
+
+
+
+
+        document.getElementById('svm-form').onsubmit = async function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const formObject = Object.fromEntries(formData.entries());
+
+            const data = {
+                Pregnancies: Number(formObject.Pregnancies),
+                Glucose: Number(formObject.Glucose),
+                BloodPressure: Number(formObject.BloodPressure),
+                SkinThickness: Number(formObject.SkinThickness),
+                Insulin: Number(formObject.Insulin),
+                BMI: Number(formObject.BMI),
+                DiabetesPedigreeFunction: Number(formObject.DiabetesPedigreeFunction),
+                Age: Number(formObject.Age)
+            };
+
+            const response = await fetch(event.target.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const knnResult = document.getElementById('knnResult');
+
+
+
+            if (response.ok) {
+
+
+                knnResult.textContent = `KNN: ${result.blood_glucose_prediction === 1 ? 'Low Risk Of Diabetes' : 'High Risk Of Diabetes'}`;
+                knnResult.className = result.blood_glucose_prediction === 1 ? 'result-box high-risk' : 'result-box low-risk';
+            } else {
+                knnResult.textContent = `Error: ${result.error}`;
+            }
+        };
+    </script>
+</body>
+</html>
